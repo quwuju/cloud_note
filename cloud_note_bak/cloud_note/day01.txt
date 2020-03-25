@@ -1,0 +1,165 @@
+梁建全:liangjq@tedu.cn
+
+#项目开发
+##Ajax+SpringMVC+Spring(IOC/AOP)+MyBatis
+ Ajax-->SpringMVC-->返回JSON结果
+###JSP响应流程
+请求-->DispatcherServlet
+--> HandlerMapping
+--> Controller
+--> 返回ModelAndView/String
+--> ViewResolver
+--> JSP -->响应
+
+###JSON响应流程
+请求-->DispatcherServlet
+--> HandlerMapping
+--> Controller
+--> 返回数据对象(int,User,List<User>,Map)
+--> 引入jackson包,在Controller方法前
+    添加@ResponseBody标记
+--> JSON响应
+
+-实例1
+/ajax1.do-->DispatcherServlet
+--> HandlerMapping
+--> JsonController(1.纳入容器;2.使用@RequestMapping)
+--> 返回User对象
+--> 引入jackson包,在Controller方法前
+    添加@ResponseBody标记
+--> JSON响应
+
+##项目简介（了解项目需求）
+笔记管理系统,用户可以管理笔记信息,可以查看
+其他用户分享的笔记.
+###主要功能如下
+-用户模块：登录、注册、修改密码、退出
+-笔记本模块：创建、删除、更新、查看
+-笔记模块：创建、删除、更新、查看、转移
+-分享和收藏模块：分享、收藏、查看、搜索分享
+-回收站模块：查看、彻底删除、恢复
+-活动模块：查看活动、参加活动等
+
+##项目整体设计
+###使用的主要技术
+jQuery、Ajax、SpringMVC、IOC、AOP、MyBatis
+-jQuery:简化前端javascript和ajax编程
+-Ajax:页面局部处理;提升用户体验和性能
+-SpringMVC:负责接收请求,调用业务组件处理,
+ 将结果生成JSON响应输出
+-SpringIOC:负责管理Controller,Service,Dao
+ 维护这些组件对象之间的关系
+-MyBatis:负责实现数据库操作,实现Dao
+-SpringAOP:负责事务和异常日志功能切入。
+  （不用修改原有组件代码，就可以追加功能）
+###项目整体规范
+-所有请求采用Ajax方式交互
+ （使用$.ajax()函数）
+-系统页面全部采用HTML 
+ （替代JSP+JSTL+EL）
+-所有请求服务器处理完返回的JSON结果格式
+如下
+{"status":xx,"msg":xxx,"data":xxx}
+
+表现层--》控制层--》业务层--》持久层/数据访问层
+HTML(ajax)-->Controller-->Service-->Dao
+
+##数据库构建（MySQL）
+E-R图：Entity-Relation 实体关系模型图
+了解有哪些表，表与表之间是否有关系,
+关系条件字段。
+
+MySQL默认账户：root
+以库为单位存储（用户--》库--》表）
+常用MySQL命令
+-show databases;//查看有哪些库
+-use 库名;//使用某个库
+-show tables;//查看库里有哪些表
+-desc 表名;//查看表结构
+-source sql文件;//导入sql文件
+###导入项目库步骤
+-set names utf8;
+-source /home/soft01/cloud_note.sql;
+
+##搭建项目结构,开发登录
+###创建Web工程引入jar包
+ -spring-webmvc包
+ -mybatis包
+ -dbcp包+MySQL驱动包
+ -jackson包
+ -mybatis-spring.jar
+ -junit包
+###添加配置文件
+ -conf/spring-mvc.xml
+ -conf/spring-mybatis.xml
+ -mapper/SQL定义文件
+###划分包结构
+-com.tedu.cloudnote.controller
+ com.tedu.cloudnote.controller.user
+ com.tedu.cloudnote.controller.book
+ com.tedu.cloudnote.controller.note
+-com.tedu.cloudnote.service
+-com.tedu.cloudnote.dao
+-com.tedu.cloudnote.entity
+-com.tedu.cloudnote.util
+###添加项目HTML界面元素
+将html元素复制粘贴到webapp下
+
+##登录功能
+###发送Ajax请求
+事件："登录"按钮单击
+请求参数：用户名和密码
+请求地址：/user/login.do
+提交类型：有参用post；无参get
+###服务器端处理
+/user/login.do
+-->DispatcherServlet
+-->HandlerMapping
+-->UserLoginController.execute
+-->UserService
+-->UserDao-->cn_user
+-->返回JSON结果
+{"status":xx,"msg":xxx,"data":xxx}
+
+http://localhost:8080/cloud_note
+/user/login.do?name=demo&password=123
+
+####编写UserDao
+采用Spring+MyBatis整合实现
+-
+
+###Ajax回调处理
+成功:进入edit.html界面
+失败:在log_in.html界面给出提示信息
+
+元素.click(fn);//绑定单击fn
+元素.click();//触发单击
+父元素.on("click",子元素,fn)
+$(fn)=onload()
+=======任务=======
+1.完成课上登录发送Ajax请求功能
+2.了解项目需求,查看所给的项目资料
+  note_design.pdf和cn_user表结构
+3.回顾jQuery知识，熟悉选择器、事件
+、文档处理等函数
+4.练习搭建项目结构
+
+
+
+MD5摘要算法处理密码
+-可以将任意长度字节处理成等长字节结果
+-不可逆
+-最初用于校验文件完整性;后来用于密码处理
+
+commons-codec.jar
+
+
+
+
+
+
+
+
+
+
+

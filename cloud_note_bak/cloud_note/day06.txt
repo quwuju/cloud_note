@@ -1,0 +1,43 @@
+#创建笔记本
+##发送Ajax请求
+-发送事件：对话框中的"创建"按钮的单击
+-请求参数：笔记本名称,用户ID
+-请求地址：/book/add.do
+
+##服务器端处理
+/book/add.do
+-->AddBookController.execute
+-->BookService.addBook
+-->BookDao.save
+-->cn_notebook(insert)
+-->返回JSON结果
+##Ajax回调处理
+success:a.关闭对话框;
+        b.添加一个笔记本li
+        c.提示创建笔记本成功
+error:提示创建笔记本失败
+
+#创建笔记
+##发送Ajax请求
+-发送事件：对话框中"创建"按钮的单击
+-请求参数：笔记名称,选中的笔记本ID,
+           用户ID
+-请求地址：/note/add.do
+##服务器端处理
+/note/add.do
+-->AddNoteController.execute
+-->NoteService.addNote
+-->NoteDao.save
+-->cn_note(insert操作)
+-->返回JSON结果
+##Ajax回调处理
+success://a.关闭对话框
+        b.解析返回的JSON结果,
+        生成一个笔记li元素添加到列表中
+        c.提示创建笔记成功
+error:提示创建笔记失败
+
+
+
+
+

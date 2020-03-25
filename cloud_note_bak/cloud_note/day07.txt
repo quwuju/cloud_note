@@ -1,0 +1,43 @@
+﻿#笔记删除
+功能描述：单击笔记菜单的"X"按钮时,
+弹出删除对话框,点击对话框中的"删除"按钮，
+执行删除操作。
+##发送Ajax请求
+-发送事件：对话框中"删除"按钮的单击
+-请求参数：选中li的笔记ID
+-请求地址：/note/delete.do
+##服务器端处理
+/note/delete.do
+-->DeleteNoteController.execute
+-->NoteService.deleteNote
+-->NoteDao.updateStatus
+-->cn_note(按笔记ID将cn_note_status_id更新为"2")
+-->返回JSON结果
+##Ajax回调处理
+success:a.移除列表中删除的笔记li元素
+        b.提示笔记删除成功
+error:提示笔记删除失败
+
+#笔记转移
+功能描述：单击笔记菜单的"转移至.."按钮,
+弹出笔记转移对话框，在对话框下拉列表中，
+选择要转入的笔记本项，点击确定转移按钮
+执行转移操作。
+##发送Ajax请求
+-发送事件：对话框中"确定"按钮的单击
+-请求参数：选中项的笔记ID,要转入的笔记本ID
+ （格式检查：a.要转入笔记本是否和原笔记本相同;）
+-请求地址：/note/move.do
+##服务器端处理
+/note/move.do
+-->MoveNoteController.execute
+-->NoteService.moveNote
+-->NoteDao.updateBookId
+-->cn_note(按笔记ID将cn_notebook_id更新)
+-->返回JSON结果
+##Ajax回调处理
+success:a.移除笔记列表li元素;
+        b.提示笔记转移成功
+error:提示笔记转移失败
+
+

@@ -1,0 +1,61 @@
+#注册功能
+##发送Ajax请求
+-发送事件：注册按钮的单击
+-请求参数：用户名、昵称、密码
+-请求地址：/user/add.do,采用post
+##服务器端处理
+/user/add.do
+-->DispatcherServlet
+-->HandlerMapping
+-->UserRegistController.execute
+-->UserService.addUser
+-->UserDao.save-->cn_user(插入)
+-->返回JSON结果
+
+http://localhost:8080/cloud_note
+/user/add.do?name=demo&nick=DEMO&password=123456
+
+##Ajax回调处理
+success成功：提示注册成功;进入登录界面
+       失败：提示错误信息
+error异常：alert("注册失败");
+
+#笔记本列表显示
+##发送Ajax请求
+-发送事件：一进入edit.html就发送。onload
+-请求参数：用户ID
+-请求地址：/book/loadbooks.do,post提交
+
+##服务器端处理
+/book/loadbooks.do
+-->LoadBooksController.execute
+-->BookService.loadUserBooks
+-->BookDao.findByUserId
+-->cn_notebook(查询)
+-->返回JSON结果(将笔记本信息设置到data属性中)
+result.setData(list);
+
+##Ajax回调处理
+success:解析JSON中的data内容,循环生成
+    笔记本列表项。
+<li class="online">
+ <a>
+  <i class="fa fa-book" title="online" rel="tooltip-bottom">
+  </i> 默认笔记本
+ </a>
+</li>
+error:提示失败alert("加载笔记本列表失败")
+
+========任务========
+1.尝试按设计完成笔记本列表显示（基础好）
+2.重构前面完成的登录、注册功能
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,96 @@
+#MyBatis框架的动态SQL
+作用：可以在定义SQL的XML文件中拼凑一个
+SQL语句。MyBatis提供了一组标签,如下
+<if test="条件">...</if>
+<choose>
+  <when test="条件1">...</when>
+  <when test="条件2">...</when>
+  <otherwise>...</otherwise>
+</choose>
+<foreach>...</foreach>
+<where>:a.顶一个where关键字;
+b.去除条件最前面多余的and或or关键字
+
+<select id="find1">
+  select * from cn_note
+  <if test="条件">
+    where cn_note_title like #{tilte}
+  </if>
+</select>
+
+select * from cn_note where 标题 like ?
+select * from cn_note where 状态=?
+select * from cn_note 
+where 标题 like ? and 状态=?
+select * from cn_note
+
+
+a,b,c 排列组合算法
+{}
+{a},{b},{c}
+{a,b}{a,c}{b,c}
+{a,b,c}
+组合查询页面
+
+##案例1：笔记组合查询note_manager.html
+##发送Ajax请求
+-发送事件：单击"搜索笔记"按钮
+-请求参数：标题,状态,开始日期,结束日期
+-请求地址：/note/manager.do
+##服务端处理
+/note/manager.do
+-->ManagerNoteController.execute
+-->NoteService.loadManager
+-->NoteDao.findNotes-->cn_note(动态SQL)
+-->返回JSON结果
+##Ajax回调处理
+success:解析JSON结果,显示成table列表
+
+
+update cn_note
+set cn_notebook_id=#{bookId}
+where cn_note_id=#{noteId}
+
+update cn_note
+set cn_note_status_id='2'
+where cn_note_id=#{id}
+
+UPDATE cn_note
+<if test="">
+SET cn_notebook_id=#{bookId},
+</if>
+<if test="">
+    cn_note_status_id=#{statusId},
+</if>
+<if test="">
+    cn_note_title=#{cn_note_title},
+</if>
+<if test="">
+    cn_note_body=#{cn_note_body},
+</if>
+<if test="">
+    cn_note_last_modify_time=#{cn_note_last_modify_time}
+</if>
+WHERE cn_note_id=#{cn_note_id}
+
+
+delete from cn_note
+where cn_note_id in ("1","2","3")
+
+String[] ids = {"1","2","3"}
+
+delete from cn_note
+where cn_note_id in
+
+ <foreach collection="ids" item="id"
+  separator="," open="(" close=")">
+  #{id}
+ </foreach>
+
+
+for(String id:ids){
+ 
+}
+
+1,2,3
+

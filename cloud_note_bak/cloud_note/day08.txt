@@ -1,0 +1,66 @@
+#笔记分享
+功能描述：用户点击笔记菜单中"分享"按钮,
+执行分享操作。
+本质：对cn_share（分享笔记表）进行insert
+##发送Ajax请求
+-发送事件:菜单中的"分享"按钮的单击
+-请求参数：笔记ID
+-请求地址：/share/add.do
+##服务器端处理
+/share/add.do
+-->ShareNoteController.execute
+-->ShareService.shareNote
+-->ShareDao.save-->cn_share(insert)
+-->返回JSON结果
+##Ajax回调处理
+success:提示用户分享成功；
+  （扩展：添加图标）
+
+#分享笔记搜索
+功能描述：用户在搜索输入框输入"关键词"
+，按回车触发搜索操作。
+（本质：对cn_share表进行cn_share_title
+模糊查询）
+select * from cn_share
+where cn_share_title like '%java%';
+##发送Ajax请求
+-发送事件：输入框中按回车键
+-请求参数：输入框中的内容（关键词）
+-请求地址：/share/search.do
+##服务器端处理
+/share/search.do
+-->ShareSearchController.execute
+-->ShareService.searchNote
+-->ShareDao.findLikeTitle
+-->cn_share(模糊搜索)
+-->返回JSON结果
+
+##Ajax回调处理
+success:a.解析JSON结果生成搜索结果列表
+        b.将搜索结果列表显示;其他列表隐藏
+        （pc_part_6显示）
+pc_part_2 全部笔记列表
+pc_part_4 回收站笔记列表
+pc_part_6 搜索结果列表
+pc_part_7 收藏笔记列表
+pc_part_8 参加活动的笔记列表
+
+error:提示搜索失败
+
+$("#search_note").keydown(function(event){
+   var code = event.keyCode;//获取键盘的code码
+   if(code==13){
+      //回车键,获取关键词,发送Ajax请求
+   }
+});
+
+
+select * from cn_share limit n,m;
+n:抓取记录的起点,从0开始算(0表示第1条)
+m:抓取记录的最大数
+
+
+
+
+
+

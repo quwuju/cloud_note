@@ -1,0 +1,58 @@
+#MyBatis关联映射
+作用：可以加载多个相关表的记录,封装成
+实体对象。
+E-R:powerdesign
+##单个对象关联
+cn_user-->User
+cn_notebook-->Book
+cn_user+cn_notebook-->User+Book
+
+public class Book{
+  //Book的属性
+  //追加关联属性
+  private User user;
+}
+
+###案例
+功能：显示笔记本列表
+"笔记本名,创建时间,所属用户名"
+####使用2个SQL分别加载Book和相关User信息
+
+####使用1个SQL加载Book和User信息
+
+
+##多个对象关联(集合)
+
+public class User{
+ //User的属性
+ //追加关联属性
+ private List<Book> books;
+}
+
+###案例
+需求:根据某个ID查询用户及所属笔记本信息
+
+####利用一个SQL提取User信息，然后
+再利用一个SQL提取相关Book信息
+（简单,与db两次交互，不适合多条抓取）
+####利用一个多表关联join的SQL一次性
+提取User和Book信息
+（复杂,与db一次交互）
+
+
+
+#主键字段处理
+如果利用数据库自动递增或序列方式生成主键值,
+在执行完insert语句后,如何立刻返回数据库
+生成的主键值？
+
+
+
+
+
+
+
+
+
+
+

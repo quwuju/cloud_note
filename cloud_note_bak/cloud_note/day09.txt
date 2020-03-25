@@ -1,0 +1,140 @@
+#搜索分享笔记的查看
+功能描述：用户单击搜索结果列表中的li
+,发送Ajax请求去cn_share获取分享笔记信息,
+显示到预览笔记区域。(pc_part_5显示,pc_part_3隐藏)
+##发送Ajax请求
+-发送事件：搜索结果列表的li元素
+-请求参数：分享ID shareId
+-请求地址：/share/load.do
+##服务器端处理
+/share/load.do
+-->LoadShareController.execute
+-->ShareService.loadShare
+-->ShareDao.findById-->cn_share
+-->返回JSON结果（Share对象）
+##Ajax回调处理
+success:解析JSON结果中的Share内容,
+  显示到预览笔记区域.
+
+#搜索分享笔记（分页处理）
+/share/search.do(传递查询关键字和第几页)
+-->Controller(接收请求和参数)
+-->Service(接收参数,处理参数)
+ 关键字前后追加%;根据第几页计算抓取起点
+-->Dao (SQL: limit 起点,5)
+-->返回指定第几页的记录结果
+
+#Spring事务管理
+##事务回顾
+数据库Oracle;可以commit和rollback;
+增删改语句(DML语句)
+JDBC:自动commit;
+
+业务：A账号给B转入10000
+
+con.setAutoCommit(false);
+//将A账号资金减去10000（更新update）
+//将B账号资金加上10000（更新update）
+con.commit();/con.rollback();
+
+Mybatis:显式执行sqlSession.commit();
+Spring+MyBatis:自动提交事务,每个增删改
+操作都是一个独立的事务。
+
+事务作用：保障一组数据库SQL操作的完整性
+
+##项目中事务
+默认,每个Dao方法都是一个独立事务。
+如果Service方法使用两个Dao方法处理,
+无法保障Service方法的完整性。
+//默认事务
+public void someServiceMethod(){
+   dao.save();//开始事务,提交/回滚
+   dao.update();//开始事务,提交/回滚
+}
+//采用事务保证service处理完整性
+public void someServiceMethod(){
+ try{
+  //开启事务
+   Service.shareNote()方法
+  //提交事务
+ }catch(){
+  //异常回滚事务
+ }
+}
+
+如果按上面结构改动,需要对每个Service组件
+方法修改,工作量非常大。可以采用Spring来
+进行事务控制,工作量非常小,而且非常灵活。
+##Spring事务处理
+Spring提供了事务管理的封装,不同技术提供
+的封装组件不同,例如JDBC和MyBatis采用
+DataSourceTransactionManager组件
+封装了事务commit和捕获异常后rollback.
+Spring底层借助了AOP机制将
+DataSourceTransactionManager作用到
+业务方法上去。（基于配置方式）
+//@Transactional
+public void f1(){...}
+//执行效果等价于
+try{
+ 开启事务
+ 调用f1();
+ 提交事务
+}catch(){
+ 回滚事务
+}
+
+##重点掌握使用方法（XML配置/注解配置）
+-<bean>定义DataSourceTransactionManager
+-开启@Transactional注解<tx:annotation-driven/>
+-在业务组件类前或方法前使用@Transactional
+
+##@Transactional标记属性(控制事务属性)
+###可读写特性readOnly
+默认可读可写;如果遇到只有select操作的方法
+可以采用只读事务。使用格式：
+@Transactional(readOnly=true)
+###回滚特性rollbackFor
+默认RuntimeException回滚,其他异常不回滚。
+
+@Transactional
+public void f1(){
+  //db操作
+  //发生了IOException
+}
+默认使用：db操作无法撤销,如果需要撤销
+需要使用@Transactional(rollbackFor=IOException.class)
+
+###传播特性propagation
+一般采用默认传播类型，类型为REQUIRED。
+@Transactional
+public void f1(){
+  //业务代码A
+  f2();
+  //业务代码B
+}
+
+@Transactional
+public void f2(){
+  //业务代码C//默认C出错会影响f1的A
+}
+
+Spring中常用事务类型：
+
+REQUIRED--支持当前事务，如果当前没有事务，就新建一个事务。这是最常见的选择。
+SUPPORTS--支持当前事务，如果当前没有事务，就以非事务方式执行。
+MANDATORY--支持当前事务，如果当前没有事务，就抛出异常。
+REQUIRES_NEW--新建事务，如果当前存在事务，把当前事务挂起。
+NOT_SUPPORTED--以非事务方式执行操作，如果当前存在事务，就把当前事务挂起。
+NEVER--以非事务方式执行，如果当前存在事务，则抛出异常。
+NESTED--如果当前存在事务，则在嵌套事务内执行。如果当前没有事务，则进行与REQUIRED类似的操作。
+拥有多个可以回滚的保存点，内部回滚不会对外部事务产生影响。只对DataSourceTransactionManager有效
+
+
+###隔离特性isolation
+一般采用默认隔离级别,级别为READ_COMMITED
+
+
+#其他时间自己独立设计开发
+

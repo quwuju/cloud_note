@@ -1,0 +1,47 @@
+﻿#更新笔记显示
+##发送Ajax请求
+-发送事件：笔记列表li元素的单击
+-请求参数：笔记ID
+-请求地址：/note/load.do
+
+##服务器端处理
+/note/load.do
+-->LoadNoteController.execute
+-->NoteService.loadNote
+-->NoteDao.findById
+-->cn_note
+-->返回JSON结果
+
+##Ajax回调处理
+success:解析返回的JSON结果,将标题和内容
+        显示到编辑区位置
+error:alert("加载笔记信息失败");
+
+#更新笔记信息
+##发送Ajax请求
+-发送事件："保存笔记"按钮的单击
+-请求参数：笔记ID,笔记标题,笔记内容
+-请求地址：/note/update.do
+##服务器端处理
+/note/update.do
+-->UpdateNoteController.execute
+-->NoteService.updateNote
+-->NoteDao.update(Note note)
+-->cn_note(更新)
+-->返回JSON结果
+##Ajax回调处理
+success:alert提示保存笔记成功
+error:alert提示保存笔记失败
+
+<li><a class="checked">...</li>
+
+$("#note_ul a.checked").parent();
+
+#项目练习
+##任务一：完成今天笔记显示和笔记更新功能
+##任务二：尝试处理对话框关闭
+          和创建笔记本功能
+
+
+
+

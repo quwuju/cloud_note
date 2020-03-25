@@ -1,0 +1,43 @@
+#笔记列表显示
+##发送Ajax请求
+-发送事件：笔记本li元素的单击
+-请求参数：笔记本ID
+-请求地址：/note/loadnotes.do
+##服务器端处理
+/note/loadnotes.do
+-->LoadNotesController.execute
+-->NoteService.loadBookNotes
+-->NoteDao.findByBookId
+-->cn_note(查询)
+-->返回JSON结果
+
+cn_user(用户)  
+cn_notebook(笔记本,cn_user_id)    
+cn_note(笔记,cn_notebook_id,cn_user_id)
+
+##Ajax回调处理
+-成功：解析服务器返回的JSON结果,提取
+       笔记信息,生成笔记li元素列表
+-失败：提示加载笔记列表失败
+
+$(function(){
+  //发送Ajax请求-->服务器端处理-->回调处理
+  //给li绑定单击(可以给未来元素绑定on)
+  父元素.on("事件类型",子元素,fn处理);
+})
+
+public class Dao{
+  public void f1(String ss);
+  public void f2();
+  public void f3(Map map);
+  public void f4(User user);
+}
+
+#练习任务
+##完成今天课上介绍的功能
+a.笔记本列表显示
+b.笔记列表显示
+##重构今天课上案例
+
+
+
